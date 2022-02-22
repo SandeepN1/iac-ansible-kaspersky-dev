@@ -7,6 +7,6 @@
     - name: Install kaspersky Agent Windows
       raw: '{{ tempfile_kaspersky.path }}\setup.exe /s'
       args:
-        chdir: '{{ tempfile_kaspersky.path }}'  
+        chdir: '{{ tempfile_kaspersky.path }}'
 
   when: not kaspersky_already_installed
