@@ -1,0 +1,36 @@
+---
+
+- name: Download and install kaspersky package from s3 bucket
+
+  block:
+
+    - name: Create Temporary build directory to Copy Binary for Windows
+      win_tempfile:
+        state: directory
+        prefix: kaspersky
+        path: C:\Temp
+      register: tempfile_kaspersky
+
+    - name: Source AWS Credentials for Copy to work
+      win_file:
+        path: "{{ ansible_user_dir }}/.aws"
+        state: directory
+
+    - name: Copy Creds for AWS s3 to work for windows
+      win_copy:
+         src: "creds"
+         dest: "{{ ansible_user_dir }}/.aws/credentials"
+      no_log: true
+
+    - name: Download from s3 bucket when kaspersky_s3_bucket is set
+      win_command: "aws s3 cp s3://{{ kaspersky_windows_s3_path }} {{ tempfile_kaspersky.path }} --recursive"
+      no_log: true
+
+  always:
+
+    - name: Cleanup credentials
+      win_file:
+         path: "{{ ansible_user_dir }}/.aws/credentials"
+         state: absent
+
+  when: not kaspersky_already_installed

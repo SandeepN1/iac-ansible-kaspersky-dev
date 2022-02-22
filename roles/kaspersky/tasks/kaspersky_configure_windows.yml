@@ -1,0 +1,15 @@
+---
+
+- name: Configure kaspersky Agent and Service
+
+  block:
+
+
+    - name: Enable and start service kaspersky
+      win_service:
+       name: klnagent
+       state: started
+       start_mode: delayed
+
+  when: not kaspersky_already_installed
+

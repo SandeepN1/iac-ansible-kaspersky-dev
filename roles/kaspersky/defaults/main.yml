@@ -1,0 +1,4 @@
+---
+
+kaspersky_already_installed: false
+default_action: install

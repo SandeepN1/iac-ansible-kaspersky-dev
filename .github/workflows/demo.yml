@@ -1,0 +1,30 @@
+name: Demo
+on:
+  push:
+    branches: [ dev ]
+jobs:
+  print:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Print Success Message
+      run: echo "This Job ran successfully."
+  notify:
+    runs-on: ubuntu-latest
+    if: always()
+    needs: print
+    steps:
+      - name: Checkout Action  
+        uses: actions/checkout@v2
+        with:
+          repository: GS-MAFTech/githubactions-msnotifications
+          token: ${{ secrets.REPO_TOKEN }}
+          ref: dev
+          path: ./
+      - name: Docker Login & Pull Image
+        run: echo  ${{ secrets.REPO_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker pull ghcr.io/gs-maftech/githubactions-msnotifications:v2
+      - name: Send a Notification
+        id: notify
+        uses: ./
+        with:
+          teams_webhook_url: ${{ secrets.TEAMS_HOOK }}
+          message: "Github Action Completed for ${{ github.repository }} with Build Number ${{ github.run_number }} and the outcome is  ${{ needs.print.result }}."

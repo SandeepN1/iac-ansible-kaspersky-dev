@@ -1,0 +1,26 @@
+name: "Lint Ansible Kaspersky"
+on:
+  push:
+    branches: [ dev ]
+  workflow_dispatch:
+jobs:
+  ansible-execution:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v2
+      - name: Checkout Action
+        uses: actions/checkout@v2
+        with:
+          repository: GS-MAFTech/githubactions-ansible
+          token: ${{ secrets.REPO_TOKEN }}
+          ref: dev
+          path: ./action
+      - name: Docker Login & Pull Image
+        run: echo  ${{ secrets.REPO_TOKEN }} | docker login ghcr.io -u ${{ github.actor }} --password-stdin && docker pull ghcr.io/gs-maftech/githubactions-ansible:v3
+      - name: Ansible Lint
+        uses: ./action/
+        with:
+          operation: ansible-lint
+          command: -x
+          arguments: 601,602 kaspersky.yml

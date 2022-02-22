@@ -1,0 +1,11 @@
+---
+
+- name: Cleanup kaspersky Install Binaries
+  win_file:
+    path: "{{ item }}"
+    state: absent
+  with_items:
+     - '{{ tempfile_kaspersky.path }}'
+
+  when: not kaspersky_already_installed
+

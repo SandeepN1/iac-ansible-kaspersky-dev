@@ -1,0 +1,28 @@
+---
+
+- name: Check of kaspersky Agent is Supported on Windows
+  assert:
+   that:
+     - ( ansible_os_family == 'Windows' )
+   fail_msg: "Windows Family {{ ansible_os_family }} is not Supported"
+
+- name: Install and Configure kaspersky Agent
+
+  block:
+
+    - name: Check for kaspersky agent being Installed Windows
+      include_tasks: check_kaspersky_win_install.yml
+
+    - name: Copy kaspersky Software for Install Windows
+      include_tasks: copy_software_windows.yml
+
+    - name: Install kaspersky Agent on Windows
+      include_tasks: kaspersky_win_install.yml
+
+    - name: Start kaspersky Agent On Windows
+      include_tasks: kaspersky_configure_windows.yml
+
+  always:
+
+    - name: Cleanup kaspersky Install Binaries Windows
+      include_tasks: cleanup_windows.yml

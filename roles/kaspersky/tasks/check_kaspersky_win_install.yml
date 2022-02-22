@@ -1,0 +1,16 @@
+---
+
+- name: Check if kaspersky service exists
+  win_service:
+    name: klnagent
+  register: kaspersky_service
+  check_mode: true
+
+- debug: var=kaspersky_service
+
+- name: Set fact for kaspersky agent already Installed
+  set_fact:
+    kaspersky_already_installed: true
+  when: kaspersky_service.exists|bool == true
+
+- debug: var=kaspersky_already_installed

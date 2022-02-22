@@ -1,0 +1,31 @@
+---
+
+- name: Create tmp directory
+  win_file:
+     path: C:\tmp\install
+     state: directory
+
+- name: Install python3
+  win_chocolatey:
+     name: python3
+     state: present
+
+- name: Install python packages
+  win_shell: |
+     pip install boto3
+- name: Ensure that Python3 is present on the global system path
+  win_path:
+    elements:
+    - 'C:\Python36'
+
+- name: Download AWSCLI
+  win_shell: |
+    $url = "https://s3.amazonaws.com/aws-cli/AWSCLI64.msi"
+    $output = "C:\tmp\install\AWSCLI64.msi"
+    $wc = New-Object System.Net.WebClient
+    $wc.DownloadFile($url, $output)
+- name: AWS CLI install
+  win_package:
+     path: C:\tmp\install\AWSCLI64.msi
+     state: present
+

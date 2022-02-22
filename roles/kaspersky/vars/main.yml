@@ -1,0 +1,12 @@
+---
+
+kaspersky_s3_bucket: "maf-sources"
+
+_kaspersky_s3_bucket_win_folder: 
+ default: kaspersky_agent_cloud
+ Vmware: kaspersky_agent_dc
+kaspersky_s3_bucket_win_folder: "{{ _kaspersky_s3_bucket_win_folder[ansible_system_vendor] | default(_kaspersky_s3_bucket_win_folder['default']) }}" 
+
+kaspersky_windows_s3_path: "{{ kaspersky_s3_bucket }}/{{ kaspersky_s3_bucket_win_folder }}/"
+
+kaspersky_pkg_windows: setup.exe
